@@ -1,0 +1,428 @@
+mysql> Create database Bank_database
+    -> ;
+Query OK, 1 row affected (0.01 sec)
+mysql> use Bank_database
+Database changed
+mysql> create table Branch(branch_name varchar(30), branch_city varchar(30), assets real, primary key(branch_name));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc Branch;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| branch_name | varchar(30) | NO   | PRI | NULL    |       |
+| branch_city | varchar(30) | YES  |     | NULL    |       |
+| assets      | double      | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> create table BankAccount(branch_name varchar(30), accno int, balance real, primary key(accno), foreign key(branch_name) references Branch(branch_name));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc BAnkACcount
+    -> ;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| branch_name | varchar(30) | YES  | MUL | NULL    |       |
+| accno       | int         | NO   | PRI | NULL    |       |
+| balance     | double      | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> create table BankCustomer(customer_name varchar(30), customer_street varchar(30), customer_city varchar(30), primary key(customer_name));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc BankCustomer
+    -> ;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| customer_name   | varchar(30) | NO   | PRI | NULL    |       |
+| customer_street | varchar(30) | YES  |     | NULL    |       |
+| customer_city   | varchar(30) | YES  |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> create table Depositer(customer_name varchar(30), accno int, primary key(customer_name, accno), foreign key(accno
+) references BankAccount(accno), foreign key(customer_name)  references BankCustomer(customer_name));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc Depositer;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| customer_name | varchar(30) | NO   | PRI | NULL    |       |
+| accno         | int         | NO   | PRI | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> create table Loan(loan_number int, branch_name varchar(30), amount real, primary key(loan_number), foreign key(br
+anch_name) references Branch(branch_name));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> desc Loan;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| loan_number | int         | NO   | PRI | NULL    |       |
+| branch_name | varchar(30) | YES  | MUL | NULL    |       |
+| amount      | double      | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Branch values('SBI_Chamrajpet', 'Bangalore', 50000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into Branch values('SBI_ResidencyRoad','Bangalore', 10000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Branch values('SBI_ShivajiRoad','Bombay', 20000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Branch values('SBI_ParlimentRoad','Delhi', 10000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Branch values('SBI_Jantarmantar','Delhi', 20000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from Branch;
++-------------------+-------------+--------+
+| branch_name       | branch_city | assets |
++-------------------+-------------+--------+
+| SBI_Chamrajpet    | Bangalore   |  50000 |
+| SBI_Jantarmantar  | Delhi       |  20000 |
+| SBI_ParlimentRoad | Delhi       |  10000 |
+| SBI_ResidencyRoad | Bangalore   |  10000 |
+| SBI_ShivajiRoad   | Bombay      |  20000 |
++-------------------+-------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> insert into Loan values(5,'SBI_Jantarmantar',5000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Branch values(4,'SBI_ParlimentRoad',4000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Branch values(3,'SBI_ShivajiRoad',3000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Branch values(1,'SBI_Chamrajpet', 1000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Branch values(2,'SBI_ResidencyRoad',2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from Loan;
++-------------+------------------+--------+
+| loan_number | branch_name      | amount |
++-------------+------------------+--------+
+|           5 | SBI_Jantarmantar |   5000 |
++-------------+------------------+--------+
+1 row in set (0.00 sec)
+
+mysql> select * from Branch;
++-------------------+-------------------+--------+
+| branch_name       | branch_city       | assets |
++-------------------+-------------------+--------+
+| 1                 | SBI_Chamrajpet    |   1000 |
+| 2                 | SBI_ResidencyRoad |   2000 |
+| 3                 | SBI_ShivajiRoad   |   3000 |
+| 4                 | SBI_ParlimentRoad |   4000 |
+| SBI_Chamrajpet    | Bangalore         |  50000 |
+| SBI_Jantarmantar  | Delhi             |  20000 |
+| SBI_ParlimentRoad | Delhi             |  10000 |
+| SBI_ResidencyRoad | Bangalore         |  10000 |
+| SBI_ShivajiRoad   | Bombay            |  20000 |
++-------------------+-------------------+--------+
+9 rows in set (0.00 sec)
+
+mysql> delete
+    -> from Branch
+    -> where branch_name in (1,2,3,4);
+ERROR 1292 (22007): Truncated incorrect DOUBLE value: 'SBI_Chamrajpet'
+mysql> delete
+    -> from Branch
+    -> where assets in (1000,2000,3000,4000);
+Query OK, 4 rows affected (0.00 sec)
+
+mysql> select * from Branch;
++-------------------+-------------+--------+
+| branch_name       | branch_city | assets |
++-------------------+-------------+--------+
+| SBI_Chamrajpet    | Bangalore   |  50000 |
+| SBI_Jantarmantar  | Delhi       |  20000 |
+| SBI_ParlimentRoad | Delhi       |  10000 |
+| SBI_ResidencyRoad | Bangalore   |  10000 |
+| SBI_ShivajiRoad   | Bombay      |  20000 |
++-------------------+-------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> insert into Loan values(1,'SBI_Chamrajpet', 1000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Loan values(2,'SBI_ResidencyRoad',2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Loan values(3,'SBI_ShivajiRoad',3000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Loan values(4,'SBI_ParlimentRoad',4000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from Loan;
++-------------+-------------------+--------+
+| loan_number | branch_name       | amount |
++-------------+-------------------+--------+
+|           1 | SBI_Chamrajpet    |   1000 |
+|           2 | SBI_ResidencyRoad |   2000 |
+|           3 | SBI_ShivajiRoad   |   3000 |
+|           4 | SBI_ParlimentRoad |   4000 |
+|           5 | SBI_Jantarmantar  |   5000 |
++-------------+-------------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> insert into BankAccount values(11,'SBI_Jantarmantar',2000);
+ERROR 1366 (HY000): Incorrect integer value: 'SBI_Jantarmantar' for column 'accno' at row 1
+mysql> desc BankAccount;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| branch_name | varchar(30) | YES  | MUL | NULL    |       |
+| accno       | int         | NO   | PRI | NULL    |       |
+| balance     | double      | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_Jantarmantar',11,2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_Chamrajpet',1,2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ResidencyRoad',2,5000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ShivajiRoad',3,6000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ParlimantRoad',4,9000);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`bank_database`.`bankaccount`, CONSTRAINT `bankaccount_ibfk_1` FOREIGN KEY (`branch_name`) REFERENCES `branch` (`branch_name`))
+mysql> insert into BankAccount values('SBI_ParlimantRoad',4,9000);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`bank_database`.`bankaccount`, CONSTRAINT `bankaccount_ibfk_1` FOREIGN KEY (`branch_name`) REFERENCES `branch` (`branch_name`))
+mysql> select * from BAnkAccount;
++-------------------+-------+---------+
+| branch_name       | accno | balance |
++-------------------+-------+---------+
+| SBI_Chamrajpet    |     1 |    2000 |
+| SBI_ResidencyRoad |     2 |    5000 |
+| SBI_ShivajiRoad   |     3 |    6000 |
+| SBI_Jantarmantar  |    11 |    2000 |
++-------------------+-------+---------+
+4 rows in set (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ParlimantRoad',4,9000);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`bank_database`.`bankaccount`, CONSTRAINT `bankaccount_ibfk_1` FOREIGN KEY (`branch_name`) REFERENCES `branch` (`branch_name`))
+mysql> insert into BankAccount values('SBI_Jantarmantar',5,8000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ShivajiRoad',6,4000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ResidencyRoad',8,4000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ParlimentRoad',9,3000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ResidencyRoad',10,5000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankAccount values('SBI_ParlimentRoad',4,9000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from BankAccount;
++-------------------+-------+---------+
+| branch_name       | accno | balance |
++-------------------+-------+---------+
+| SBI_Chamrajpet    |     1 |    2000 |
+| SBI_ResidencyRoad |     2 |    5000 |
+| SBI_ShivajiRoad   |     3 |    6000 |
+| SBI_ParlimentRoad |     4 |    9000 |
+| SBI_Jantarmantar  |     5 |    8000 |
+| SBI_ShivajiRoad   |     6 |    4000 |
+| SBI_ResidencyRoad |     8 |    4000 |
+| SBI_ParlimentRoad |     9 |    3000 |
+| SBI_ResidencyRoad |    10 |    5000 |
+| SBI_Jantarmantar  |    11 |    2000 |
++-------------------+-------+---------+
+10 rows in set (0.00 sec)
+
+mysql> desc BankCustomer;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| customer_name   | varchar(30) | NO   | PRI | NULL    |       |
+| customer_street | varchar(30) | YES  |     | NULL    |       |
+| customer_city   | varchar(30) | YES  |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> insert into BankCustomer values('Avinash', 'Bull_Temple_Road','Bangalore');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankCustomer values('Dinesh', 'Bannerghatta_Road','Bangalore');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankCustomer values('Mohan', 'NationalCollege_Road','Bangalore');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankCustomer values('Nikhil', 'Akbar_Road','Delhi');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into BankCustomer values('Ravi', 'Prithviraj_Road','Delhi');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from BankCustomer;
++---------------+----------------------+---------------+
+| customer_name | customer_street      | customer_city |
++---------------+----------------------+---------------+
+| Avinash       | Bull_Temple_Road     | Bangalore     |
+| Dinesh        | Bannerghatta_Road    | Bangalore     |
+| Mohan         | NationalCollege_Road | Bangalore     |
+| Nikhil        | Akbar_Road           | Delhi         |
+| Ravi          | Prithviraj_Road      | Delhi         |
++---------------+----------------------+---------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into Depositer values('Avinash', 1);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Depositer values('Dinesh', 2);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Depositer values('Nikhil', 4);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Depositer values('Ravi', 5);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Depositer values('Avinash', 8);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Depositer values('Nikhil', 9);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Depositer values('Dinesh', 10);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into Depositer values('Nikhil', 11);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from Depositer;
++---------------+-------+
+| customer_name | accno |
++---------------+-------+
+| Avinash       |     1 |
+| Dinesh        |     2 |
+| Nikhil        |     4 |
+| Ravi          |     5 |
+| Avinash       |     8 |
+| Nikhil        |     9 |
+| Dinesh        |    10 |
+| Nikhil        |    11 |
++---------------+-------+
+8 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> selct * from Loan;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'selct * from Loan' at line 1
+mysql> select * from Loan;
++-------------+-------------------+--------+
+| loan_number | branch_name       | amount |
++-------------+-------------------+--------+
+|           1 | SBI_Chamrajpet    |   1000 |
+|           2 | SBI_ResidencyRoad |   2000 |
+|           3 | SBI_ShivajiRoad   |   3000 |
+|           4 | SBI_ParlimentRoad |   4000 |
+|           5 | SBI_Jantarmantar  |   5000 |
++-------------+-------------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Branch;
++-------------------+-------------+--------+
+| branch_name       | branch_city | assets |
++-------------------+-------------+--------+
+| SBI_Chamrajpet    | Bangalore   |  50000 |
+| SBI_Jantarmantar  | Delhi       |  20000 |
+| SBI_ParlimentRoad | Delhi       |  10000 |
+| SBI_ResidencyRoad | Bangalore   |  10000 |
+| SBI_ShivajiRoad   | Bombay      |  20000 |
++-------------------+-------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Depositer;
++---------------+-------+
+| customer_name | accno |
++---------------+-------+
+| Avinash       |     1 |
+| Dinesh        |     2 |
+| Nikhil        |     4 |
+| Ravi          |     5 |
+| Avinash       |     8 |
+| Nikhil        |     9 |
+| Dinesh        |    10 |
+| Nikhil        |    11 |
++---------------+-------+
+8 rows in set (0.00 sec)
+
+mysql> select * from BankCustoemer;
+ERROR 1146 (42S02): Table 'bank_database.bankcustoemer' doesn't exist
+mysql> select * from BankCustomer;
++---------------+----------------------+---------------+
+| customer_name | customer_street      | customer_city |
++---------------+----------------------+---------------+
+| Avinash       | Bull_Temple_Road     | Bangalore     |
+| Dinesh        | Bannerghatta_Road    | Bangalore     |
+| Mohan         | NationalCollege_Road | Bangalore     |
+| Nikhil        | Akbar_Road           | Delhi         |
+| Ravi          | Prithviraj_Road      | Delhi         |
++---------------+----------------------+---------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from BankAccount;
++-------------------+-------+---------+
+| branch_name       | accno | balance |
++-------------------+-------+---------+
+| SBI_Chamrajpet    |     1 |    2000 |
+| SBI_ResidencyRoad |     2 |    5000 |
+| SBI_ShivajiRoad   |     3 |    6000 |
+| SBI_ParlimentRoad |     4 |    9000 |
+| SBI_Jantarmantar  |     5 |    8000 |
+| SBI_ShivajiRoad   |     6 |    4000 |
+| SBI_ResidencyRoad |     8 |    4000 |
+| SBI_ParlimentRoad |     9 |    3000 |
+| SBI_ResidencyRoad |    10 |    5000 |
+| SBI_Jantarmantar  |    11 |    2000 |
++-------------------+-------+---------+
+10 rows in set (0.00 sec)
+mysql> select d.customer_name
+    -> from Depositer d, BankAccount b
+    -> where b.branch_name = 'SBI_ResidencyRoad' and b.accno = d.accno
+    -> group by d.customer_name
+    -> having count(customer_name) >=2;
++---------------+
+| customer_name |
++---------------+
+| Dinesh        |
++---------------+
