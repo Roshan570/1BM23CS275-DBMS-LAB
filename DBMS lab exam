@@ -1,0 +1,91 @@
+create database proctor_student1;
+use proctor_student1;
+create table faculty(fac_id varchar(5) primary key,
+name varchar(20),
+dept varchar(5),
+mobile_no int);
+create table student2(
+usn varchar(20) primary key,
+name varchar(100),
+mobile_no int,
+email_id varchar(100),
+dept varchar(100),
+parent_name varchar(100),
+parent_mobile int,
+address varchar(100),
+fac_id varchar(30),
+foreign key(fac_id) references faculty(fac_id));
+create table sem_details(
+sem int,
+course_name varchar(30),
+course_code varchar(30),
+course_credits int,
+stud_usn varchar(30),
+cie_marks int,
+see_marks int,
+attendance int,
+grade varchar(1),
+cgpa int,
+sgpa int,
+foreign key(stud_usn) references student2(usn));
+create table parents(
+stud_usn varchar(30),
+parent_name varchar(30),
+foreign key(stud_usn) references  student2(usn));
+
+
+create table student_meets(
+sl_no int primary key,
+date date,
+purpose varchar(30),
+outcome varchar(30),
+stud_usn varchar(30),
+foreign key(stud_usn) references student2(usn));
+
+
+create table parent_meeting(
+sl_no int primary key,
+date DATE,
+purpose varchar(30),
+outcome varchar(30),
+stud_usn varchar(30),
+foreign key(stud_usn) references student2(usn));
+
+
+create table leave_rec(
+sl_no int primary key,
+date DATE,
+reason varchar(30),
+duration_in_min int,
+stud_usn varchar(30),
+foreign key(stud_usn) references student2(usn));
+create table activity_rec(
+sl_no int primary key,
+date DATE,
+company_name varchar(30),
+duration int,
+stud_usn varchar(30),
+foreign key(stud_usn) references student2(usn));
+create table hod(
+hod_id varchar(30) primary key,
+dept varchar(30),
+name varchar(30),
+mobile_no int,
+fac_id varchar(100),
+foreign key (fac_id) references faculty(fac_id));
+
+
+
+
+INSERT INTO FACULTY VALUES("1BM1", "PATIL", "CSE", 89870700);
+INSERT INTO FACULTY VALUES("1BM2", "SUNIL KARVIZAY", "CSE", 89870701);
+INSERT INTO FACULTY VALUES("1BM3", "PRADEEP ", "CSE", 89870702);
+INSERT INTO FACULTY VALUES("1BM4", "LAKSHMI ", "CSE", 89870703);
+INSERT INTO FACULTY VALUES("1BM5", "AMRUTA B", "CSE", 89870704);
+
+
+INSERT INTO STUDENT2 VALUES("1BM20CS001","AMAN",98980,"AMAN@GMAIL.COM","CSE", "ANUPAM", 90090,"BIHAR","1BM1");
+INSERT INTO STUDENT2 VALUES("1BM20CS002","SHAHRUKH",98981,"SHAHRUKH@GMAIL.COM","CSE", "REYHan", 90091,"DELHI","1BM2");
+INSERT INTO STUDENT2 VALUES("1BM20CS003","SALMAN",98982,"SALMAN@GMAIL.COM","CSE", "SALIM", 90092,"MUMBAI","1BM3");
+INSERT INTO STUDENT2 VALUES("1BM20CS004","SANJAYA",98983,"SANJAY@GMAIL.COM","CSE", "SUNIL", 90093,"PUNJAB","1BM4");
+INSERT INTO STUDENT2 VALUES("1BM20CS005","AKSHAYA",98986,"RAJAT@GMAIL.COM","CSE", "RANVEER", 90094,"VARANASI","1BM5");
